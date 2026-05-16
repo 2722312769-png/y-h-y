@@ -413,15 +413,14 @@ with t_cdm:
     if paper_file and st.button("启动 AI 智能抽取知识点映射图谱"):
         with st.spinner("视觉大模型正在进行 OCR 识别与 NLP 语义分析，构建试题特征图谱..."):
             time.sleep(2)
-            skill_names = ["基础概率与一维分布", "多维分布与条件概率", "数字特征与极限定理", "抽样分布与描述统计",
-                           "参数估计与统计推断"]
+            skill_names = ["基础概率与一维分布", "多维分布与条件概率", "数字特征与极限定理", "抽样分布与描述统计", "参数估计与统计推断"]
             mock_q = np.random.choice([0, 1], size=(len(score_cols), 5), p=[0.7, 0.3])
             for i in range(len(score_cols)):
                 if sum(mock_q[i]) == 0: mock_q[i][np.random.randint(0, 5)] = 1
             st.session_state.q_matrix_df = pd.DataFrame(mock_q, index=score_cols, columns=skill_names)
             st.success("解析完成！AI 已自动提取 5 项核心认知维度，并完成初版映射。")
 
- if st.session_state.q_matrix_df is not None:
+    if st.session_state.q_matrix_df is not None:
         st.markdown("#### 步骤 2：专家微调与确认 (Human-in-the-loop)")
         st.info("**系统提示**：AI 提取结果可能存在微小偏差。请您作为学科专家，在下方表格中**直接双击单元格**进行修改（1代表考查该能力，0代表不考查）。")
         edited_q_matrix = st.data_editor(st.session_state.q_matrix_df, use_container_width=True)
@@ -463,7 +462,7 @@ with t_cdm:
                                               margin=dict(l=40, r=40, t=10, b=10))
                     st.plotly_chart(fig_mastery, use_container_width=True)
 
-            st.markdown("### 支撑数据 9：CDM 模型底层试题难度截距矩阵 (d_j)")
+            st.markdown("### 支撑数据 9：CDM 模型底层试题难度截距矩阵 ($d_j$)")
             st.dataframe(param_df, use_container_width=True)
             st.download_button("导出题目难度参数", param_df.to_csv(index=False).encode('utf-8-sig'),
                                "cdm_item_params.csv", "text/csv", key="cdm_btn_1")
@@ -479,7 +478,7 @@ with t_cdm:
             st.dataframe(mastery_df.head(10), use_container_width=True)
             st.download_button("导出隐变量矩阵", mastery_df.to_csv().encode('utf-8-sig'), "cdm_mastery.csv",
                                "text/csv", key="cdm_btn_3")
-            
+
     st.markdown('</div>', unsafe_allow_html=True)
 
 with t_report:
