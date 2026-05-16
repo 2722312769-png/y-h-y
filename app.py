@@ -421,13 +421,12 @@ with t_cdm:
             st.session_state.q_matrix_df = pd.DataFrame(mock_q, index=score_cols, columns=skill_names)
             st.success("解析完成！AI 已自动提取 5 项核心认知维度，并完成初版映射。")
 
-    if st.session_state.q_matrix_df is not None:
+ if st.session_state.q_matrix_df is not None:
         st.markdown("#### 步骤 2：专家微调与确认 (Human-in-the-loop)")
-        st.info(
-            "**系统提示**：AI 提取结果可能存在微小偏差。请您作为学科专家，在下方表格中**直接双击单元格**进行修改（1代表考查该能力，0代表不考查）。")
+        st.info("**系统提示**：AI 提取结果可能存在微小偏差。请您作为学科专家，在下方表格中**直接双击单元格**进行修改（1代表考查该能力，0代表不考查）。")
         edited_q_matrix = st.data_editor(st.session_state.q_matrix_df, use_container_width=True)
 
-      st.markdown("#### 步骤 3：启动 CDM 认知诊断引擎")
+        st.markdown("#### 步骤 3：启动 CDM 认知诊断引擎")
         
         # --- 修复核心：初始化 session_state 记忆变量 ---
         if "cdm_mastery_df" not in st.session_state:
@@ -464,7 +463,7 @@ with t_cdm:
                                               margin=dict(l=40, r=40, t=10, b=10))
                     st.plotly_chart(fig_mastery, use_container_width=True)
 
-            st.markdown("### 支撑数据 9：CDM 模型底层试题难度截距矩阵 ($d_j$)")
+            st.markdown("### 支撑数据 9：CDM 模型底层试题难度截距矩阵 (d_j)")
             st.dataframe(param_df, use_container_width=True)
             st.download_button("导出题目难度参数", param_df.to_csv(index=False).encode('utf-8-sig'),
                                "cdm_item_params.csv", "text/csv", key="cdm_btn_1")
@@ -480,6 +479,7 @@ with t_cdm:
             st.dataframe(mastery_df.head(10), use_container_width=True)
             st.download_button("导出隐变量矩阵", mastery_df.to_csv().encode('utf-8-sig'), "cdm_mastery.csv",
                                "text/csv", key="cdm_btn_3")
+            
     st.markdown('</div>', unsafe_allow_html=True)
 
 with t_report:
