@@ -171,9 +171,25 @@ def generate_report(item_df, total_series, top_features, thres, alpha):
     return "\n".join(lines)
 
 
+# ==========================================
+# 4. 前端视窗交互 (View 层 Dashboards)
+# ==========================================
 st.markdown(
     '<div class="hero"><h1>多维智能教学诊断平台</h1><p>集成 CTT、K-Means、CART 决策树、Logistic 回归与深度 CDM 认知诊断算法</p></div>',
     unsafe_allow_html=True)
+
+# ---------- 更新：华科大 (HUST) 校园元素右下角/角落点缀 ----------
+# 我们将左侧的空白列权重设为 8（占据绝大部分空间），右侧给 3 张图片各留 1 的空间。
+# 这样可以完美地把这三张精致的线稿图挤到右侧角落，既不显眼，又起到了很好的学院风点缀作用。
+c_space, c_img1, c_img2, c_img3 = st.columns([8, 1, 1, 1])
+
+try:
+    c_img1.image("B-2-1-1 南一楼+毛主席像.png", use_column_width=True)
+    c_img2.image("B-2-1-3 建校纪念碑（宽）.png", use_column_width=True)
+    c_img3.image("B-2-1-5 图书馆.png", use_column_width=True) # 去掉了第四个“醉晚亭”
+except FileNotFoundError:
+    pass 
+
 
 uploaded_file = st.sidebar.file_uploader("接入底层评分矩阵 (Excel/CSV)", type=["xlsx", "xls", "csv"])
 if not uploaded_file:
