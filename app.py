@@ -17,7 +17,8 @@ import time
 # ==========================================
 # 1. 页面配置与 UI 样式 (MVC - View 层)
 # ==========================================
-st.set_page_config(page_title="多维教学诊断系统 Pro Max", layout="wide")
+# 将原来的 "多维教学诊断系统 Pro Max" 替换掉
+st.set_page_config(page_title="多维智能教学诊断平台", layout="wide")
 
 st.markdown("""
     <style>
@@ -181,10 +182,12 @@ def generate_report(item_df, total_series, top_features, thres, alpha):
     return "\n".join(lines)
 
 # ==========================================
+# ==========================================
 # 4. 前端视窗交互 (View 层 Dashboards)
 # ==========================================
+# 修改 <h1> 标签中的文本，去掉 Pro Max
 st.markdown(
-    '<div class="hero"><h1>多维教学诊断系统 Pro Max</h1><p>集成 CTT、K-Means、CART 决策树、Logistic 回归与深度 CDM 认知诊断算法</p></div>',
+    '<div class="hero"><h1>多维智能教学诊断平台</h1><p>集成 CTT、K-Means、CART 决策树、Logistic 回归与深度 CDM 认知诊断算法</p></div>',
     unsafe_allow_html=True)
 
 uploaded_file = st.sidebar.file_uploader("接入底层评分矩阵 (Excel/CSV)", type=["xlsx", "xls", "csv"])
