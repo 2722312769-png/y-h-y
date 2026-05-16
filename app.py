@@ -180,10 +180,33 @@ st.markdown(
 
 
 uploaded_file = st.sidebar.file_uploader("接入底层评分矩阵 (Excel/CSV)", type=["xlsx", "xls", "csv"])
-if not uploaded_file:
-    st.info("欢迎使用！请在左侧上传包含【学号、班级、各小题得分、总分】的考试成绩单，唤醒底层数据流转管线...")
-    st.stop()
 
+if not uploaded_file:
+    # --- 🚀 纯净版初始引导页 (Landing Page) ---
+    st.markdown("### ✨ 欢迎来到多维智能教学诊断平台")
+    st.markdown("本系统利用机器学习与认知诊断前沿算法，深度挖掘成绩数据背后的教学规律。**请在左侧菜单栏上传您的考试成绩单以启动系统。**")
+    
+    st.markdown("<br>", unsafe_allow_html=True) # 增加一点垂直留白
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
+        st.markdown("#### 🎯 经典测量理论 (CTT)")
+        st.markdown("自动计算全卷信度，精细化剖析每道试题的**难度与区分度**，帮您快速定位异质试题。")
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
+        st.markdown("#### 🧠 无监督多维画像")
+        st.markdown("基于 K-Means 算法对学生群体进行自适应聚类，挖掘隐藏在总分背后的**隐性能力分化特征**。")
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col3:
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
+        st.markdown("#### 🔬 深度认知诊断 (CDM)")
+        st.markdown("结合专家知识图谱，通过逻辑斯谛反向传播引擎精准追踪个体的**微观知识点精熟度**。")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.stop() # 渲染完漂亮的引导页后再停止程序，等待用户上传文件
+    
 raw_df = load_and_clean_data(uploaded_file.getvalue(), uploaded_file.name)
 auto_total, auto_group, score_cols = infer_cols(raw_df)
 
