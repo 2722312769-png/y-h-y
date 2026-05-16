@@ -14,10 +14,6 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import silhouette_score
 import time
 
-# ==========================================
-# 1. 页面配置与 UI 样式 (MVC - View 层)
-# ==========================================
-# 将原来的 "多维教学诊断系统 Pro Max" 替换掉
 st.set_page_config(page_title="多维智能教学诊断平台", layout="wide")
 
 st.markdown("""
@@ -31,10 +27,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ==========================================
-# 2. 自动化 ETL 数据预处理管线
-# ==========================================
-# 强力屏蔽词库：防止非试题列被误抓
 SUMMARY_KEYWORDS = ["总分", "合计", "总成绩", "客观", "主观", "名次", "排名", "均分", "平均", "Unnamed", "考号", "序号", "代码"]
 
 @st.cache_data
@@ -51,19 +43,18 @@ def infer_cols(df: pd.DataFrame):
     total_col, group_col = None, None
     num_cols = df.select_dtypes(include=np.number).columns.tolist()
 
-    # 1. 寻找班级列
+
     for c in df.columns:
         if "教学班" in str(c) or "行政班" in str(c) or "班级" in str(c):
             group_col = c
             break
 
-    # 2. 寻找总分列
+
     for c in df.columns:
         if not total_col and any(k in str(c) for k in ["总分", "总成绩", "合计"]):
             total_col = c
             break
 
-    # 3. 精准抓取得分列（试题）
     score_cols = [
         c for c in num_cols
         if c != total_col
@@ -71,15 +62,13 @@ def infer_cols(df: pd.DataFrame):
            and "学号" not in str(c)
     ]
 
-    # 兜底逻辑：如果提取失败，进行最后一次尝试
+
     if len(score_cols) < 3:
         score_cols = [c for c in num_cols if c != total_col and "学号" not in str(c)]
 
     return total_col, group_col, score_cols
 
-# ==========================================
-# 3. 核心计算引擎 (Model 层)
-# ==========================================
+
 def build_item_analysis(df: pd.DataFrame, score_cols: List[str], total_series: pd.Series) -> pd.DataFrame:
     res = []
     for c in score_cols:
@@ -181,11 +170,7 @@ def generate_report(item_df, total_series, top_features, thres, alpha):
     lines.append("\n【4. 微观认知追踪】\n系统已执行带有 L2 正则化的 CDM 反向传播，请实施靶向补偿教学。")
     return "\n".join(lines)
 
-# ==========================================
-# ==========================================
-# 4. 前端视窗交互 (View 层 Dashboards)
-# ==========================================
-# 修改 <h1> 标签中的文本，去掉 Pro Max
+
 st.markdown(
     '<div class="hero"><h1>多维智能教学诊断平台</h1><p>集成 CTT、K-Means、CART 决策树、Logistic 回归与深度 CDM 认知诊断算法</p></div>',
     unsafe_allow_html=True)
@@ -198,13 +183,8 @@ if not uploaded_file:
 raw_df = load_and_clean_data(uploaded_file.getvalue(), uploaded_file.name)
 auto_total, auto_group, score_cols = infer_cols(raw_df)
 
-with st.sidebar:
-    st.markdown("---")
-    st.markdown("### ETL 字段对齐")
-    total_col = st.selectbox("选定【总分序列】", [None] + list(raw_df.columns),
-                             index=([None] + list(raw_df.columns)).index(auto_total) if auto_total else 0)
-    group_col = st.selectbox("选定【班级特征】", [None] + list(raw_df.columns),
-                             index=([None] + list(raw_df.columns)).index(auto_group) if auto_group else 0)
+total_col = "总分" if "总分" in raw_df.columns else auto_total
+group_col = "教学班" if "教学班" in raw_df.columns else auto_group
 
 for c in score_cols + ([total_col] if total_col else []):
     raw_df[c] = pd.to_numeric(raw_df[c], errors="coerce")
